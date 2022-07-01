@@ -1,29 +1,33 @@
 (ns akallabeth.berlin-clock
   (:require [clojure.string :as str]))
 
-(defn greet
-  "Callable entry point to the application."
-  [data]
-  (println (str "Hello, " (or (:name data) "World") "!")))
-
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (greet {:name (first args)}))
-
 (defn time? [time] (re-matches #"^([0-1]?[0-9]|2?[0-4])(:[0-5][0-9]){2}$" time))
 
-(defn get-symbol-times [symbol] (fn [n] (take n (repeat symbol))))
-(def get-y-times (get-symbol-time "Y"))
-(def get-r-times (get-symbol-time "R"))
-(def get-o-time (get-symbol-time "O"))
-(defn test2 [symbol] (fn [times] (str symbol times)))
-(defn time-to-colours [time] (
-                              let [[hours minutes seconds] (str/split time #":")]
-                              (hours)))
+(defn print-symbol [symbol] (fn [n] (take n (repeat symbol))))
+(def print-y (print-symbol "Y"))
+(def print-r (print-symbol "R"))
+(def print-o (print-symbol "O"))
+(defn print-yyr [n] (take n ( cycle ["Y" "Y" "R"])))
+(defn calc-seconds [seconds] (if (even? seconds) (print-y 1) (print-o 1)))
+(defn calc-full-five [time max symbol] [(symbol (quot time 5)) (print-o (- max (quot time 5)))])
+(defn calc-single [time max symbol] [(symbol (mod time 5)) (print-o (- max (mod time 5)))])
+
+(defn highlight-quarters [minutes count] minutes)
+
+(defn time-to-colours [[hours minutes seconds]] [
+                                                 (calc-seconds seconds)
+                                                 (calc-full-five hours 4 print-r)
+                                                 (calc-single hours 4 print-r)
+                                                 (calc-full-five minutes 11 print-yyr)
+                                                 (calc-single minutes 4 print-y)])
 
 (defn berlin-clock [time]
 (cond
-  (time? time) (time-to-colours time)
+  (time? time) (time-to-colours (map read-string (str/split time #":")))
   :else "Wrong format"
   ))
+
+(comment
+  (= (berlin-clock "12:00") "Wrong format")
+  (berlin-clock "12:46:01")
+  )
