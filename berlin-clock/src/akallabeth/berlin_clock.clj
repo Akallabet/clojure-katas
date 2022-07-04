@@ -14,20 +14,20 @@
 
 (defn highlight-quarters [minutes count] minutes)
 
-(defn time-to-colours [[hours minutes seconds]] [
-                                                 (calc-seconds seconds)
-                                                 (calc-full-five hours 4 print-r)
-                                                 (calc-single hours 4 print-r)
-                                                 (calc-full-five minutes 11 print-yyr)
-                                                 (calc-single minutes 4 print-y)])
+(defn time-to-colours [[hours minutes seconds]] (map #(str/join (flatten %))  [
+                                                              (calc-seconds seconds)
+                                                              (calc-full-five hours 4 print-r)
+                                                              (calc-single hours 4 print-r)
+                                                              (calc-full-five minutes 11 print-yyr)
+                                                              (calc-single minutes 4 print-y)]))
 
 (defn berlin-clock [time]
 (cond
-  (time? time) (time-to-colours (map read-string (str/split time #":")))
+  (time? time) (str/join " " (time-to-colours (map read-string (str/split time #":"))))
   :else "Wrong format"
   ))
 
 (comment
   (= (berlin-clock "12:00") "Wrong format")
-  (berlin-clock "12:46:01")
+  (berlin-clock "12:36:01")
   )
