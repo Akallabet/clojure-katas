@@ -23,7 +23,13 @@
                         (div-by-5? n) "buzz"
                         :else n))
 
-(defn fizzbuzz [list] (map  ))
+(defn fizzbuzz
+  ([min max] (map fizzbuzz-n (range min max)))
+  ([max] (fizzbuzz 1 max))
+  )
+
+(defn fizzbuzz-lazy
+  ([min max] (take max (iterate inc min))))
 
 
 (comment
@@ -33,5 +39,9 @@
   (div-by-15? 30)
   (fizzbuzz-n 3)
   (fizzbuzz-n 5)
-
+  (fizzbuzz-n 15)
+  (fizzbuzz-n 4)
+  (fizzbuzz 20)
+  (fizzbuzz 5 23)
+  (fizzbuzz-lazy 1 5)
  )
