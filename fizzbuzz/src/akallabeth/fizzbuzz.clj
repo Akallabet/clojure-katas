@@ -28,8 +28,7 @@
   ([max] (fizzbuzz 1 max))
   )
 
-(defn fizzbuzz-lazy
-  ([min max] (take max (iterate inc min))))
+(def inf-fizzbuzz (map fizzbuzz-n (drop 1 (range))))
 
 
 (comment
@@ -43,5 +42,9 @@
   (fizzbuzz-n 4)
   (fizzbuzz 20)
   (fizzbuzz 5 23)
-  (fizzbuzz-lazy 1 5)
- )
+  (fizzbuzz 1 1234)
+  (take 10 inf-fizzbuzz)
+  )
+
+(def fibs
+  (map identity (iterate (fn [[a b]] [b (+ a b)]) [0 1])))
